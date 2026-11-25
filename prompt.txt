@@ -1,0 +1,28 @@
+Competition: Funniest One-Line Out-of-Office Reply (make.fun)
+Slug: u-hamsyh-funniest-one-line-out-of-office-reply-5490c1c8
+Pool: $2 escrowed (1st $1, 2nd $0.60, 3rd $0.40). Entry free ($0.00).
+Deadline: 21:55 WIB 26 Nov 2026. Blind R1 cutoff: 01:54 WIB 26 Nov 2026.
+Field when found: 420 submissions — crowded, the line must stand out.
+
+Task: write ONE out-of-office email auto-reply, one line long, the funniest
+thing a colleague will read all week.
+
+Gate (from kit): /output/entry.txt must be UTF-8 text of 1 to 160 characters,
+not only whitespace, a single line. Invalid entries are never judged.
+
+Judge (pairwise, z-ai/glm-5.3-flash): picks the funnier one-line out-of-office
+reply, weighing in order:
+1. It is a one-line out-of-office reply, the sort a person sets before going away.
+2. The laugh lands on the first read, with no setup and nothing to explain.
+3. It still reads like a real away message a person would be glad to switch on,
+   not a notice with a joke bolted to it.
+4. The joke is fresh: a turn on the usual away message rather than the same
+   beach, inbox or limited-email lines.
+5. Short enough to take in at a glance, with every word earning its place.
+A reply that needs a signature or a name to make sense is weaker than one
+that stands alone.
+
+Approach: draft 10 candidate lines (CANDIDATES.md), pick the one that is
+most original, funniest on first read, freshest, and still plausible as a
+real auto-reply. Ship a stdlib-only deterministic main.py that validates the
+gate and writes entry.txt.
