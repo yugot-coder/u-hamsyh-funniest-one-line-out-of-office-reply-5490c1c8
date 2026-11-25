@@ -57,9 +57,11 @@ def entry_sha256(text):
 
 
 def write_entry(path="entry.txt"):
-    """Validate the reply, write it to ``path``, and verify the read-back.
+    """Validate the reply, write it to ``path``, and verify byte-exactly.
 
-    Returns the SHA-256 hex digest of the written file.
+    The read-back must have the same byte length as the encoded entry
+    (no trailing newline may sneak in), be byte-identical to it, and
+    hash to the same SHA-256 digest. Returns the digest.
     """
     problems = validate_entry(ENTRY)
     if problems:
@@ -68,15 +70,30 @@ def write_entry(path="entry.txt"):
         handle.write(ENTRY)
     with open(path, "rb") as handle:
         written = handle.read()
-    if written.decode("utf-8") != ENTRY:
+    intended = ENTRY.encode("utf-8")
+    if len(written) != len(intended):
+        raise ValueError("read-back byte length mismatch for %s" % path)
+    if written != intended:
         raise ValueError("read-back mismatch for %s" % path)
+    if hashlib.sha256(written).hexdigest() != entry_sha256(ENTRY):
+        raise ValueError("read-back digest mismatch for %s" % path)
     return hashlib.sha256(written).hexdigest()
 
 
 def main(argv=None):
-    """Entry point: write entry.txt next to this script and report it."""
+    """Entry point: write entry.txt and report it.
+
+    Destination: argv[0] if given, else $MAKEFUN_OUTPUT_DIR, else the
+    directory next to this script.
+    """
     argv = list(sys.argv[1:] if argv is None else argv)
-    out_dir = argv[0] if argv else os.path.dirname(os.path.abspath(__file__))
+    if argv:
+        out_dir = argv[0]
+    elif os.environ.get("MAKEFUN_OUTPUT_DIR"):
+        out_dir = os.environ["MAKEFUN_OUTPUT_DIR"]
+    else:
+        out_dir = os.path.dirname(os.path.abspath(__file__))
+    os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
     digest = write_entry(path)
     print("wrote %s (%d chars)" % (path, len(ENTRY)))
